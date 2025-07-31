@@ -87,6 +87,7 @@ $username = $_SESSION['user']['username'] ?? 'Usuario';
           <li class="nav-item"><a class="nav-link" href="consultar_movimientos.php"><i class="bi bi-arrow-left-right"></i> Movimientos</a></li>
         <?php elseif ($rol === 'empleado'): ?>
           <li class="nav-item"><a class="nav-link" href="index.php"><i class="bi bi-box-seam"></i> Productos</a></li>
+          <li class="nav-item"><a class="nav-link" href="movimientos_empleado.php"><i class="bi bi-clock-history"></i> Movimientos</a></li>
         <?php endif; ?>
       </ul>
 
