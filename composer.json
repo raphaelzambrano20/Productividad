@@ -1,0 +1,17 @@
+{
+    "name": "leandro/sistema_inventario_login",
+    "autoload": {
+        "psr-4": {
+            "Leandro\\SistemaInventarioLogin\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "raphaelzambrano20",
+            "email": "zambranor282@gmail.com"
+        }
+    ],
+    "require": {
+        "phpoffice/phpspreadsheet": "^4.5"
+    }
+}
