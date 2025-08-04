@@ -2,6 +2,11 @@
 require_once 'auth.php';
 require_role(['admin']);
 require_once 'db.php';
+
+$mensaje = '';
+if (isset($_GET['eliminado']) && $_GET['eliminado'] === '1') {
+  $mensaje = 'Movimiento eliminado con éxito.';
+}
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -34,6 +39,17 @@ require_once 'db.php';
 </head>
 <body>
 <?php include 'sinebar.php'; ?>
+      <?php if ($mensaje): ?>
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+          <?php echo $mensaje; ?>
+        </div>
+        <script>
+          setTimeout(() => {
+            document.querySelector('.alert').classList.remove('show');
+            document.querySelector('.alert').classList.add('d-none');
+          }, 3000);
+        </script>
+      <?php endif; ?>
 
 <div class="container mt-5">
   <div class="card shadow">
@@ -41,6 +57,9 @@ require_once 'db.php';
       <h2>Consulta de Movimientos</h2>
     </div>
     <div class="card-body">
+
+      
+
       <form method="GET" class="row g-3 mb-4">
         <div class="col-md-5">
           <label for="fecha_inicio" class="form-label">Fecha de Inicio:</label>
@@ -73,7 +92,7 @@ require_once 'db.php';
                     </div>";
 
               echo "<div class='table-responsive'>
-                      <table id='tablaMovimientos' class='table table-striped table-bordered'>
+                      <table id='tablaMovimientos' class='table table-striped table-bordered text-center'>
                         <thead>
                           <tr>
                             <th>Código</th>
@@ -81,6 +100,7 @@ require_once 'db.php';
                             <th>Cantidad</th>
                             <th>Usuario</th>
                             <th>Fecha</th>
+                            <th>Acción</th>
                           </tr>
                         </thead>
                         <tbody>";
@@ -91,6 +111,14 @@ require_once 'db.php';
                           <td>{$row['cantidad']}</td>
                           <td>{$row['usuario']}</td>
                           <td>{$row['fecha']}</td>
+                          <td>
+                            <form method='POST' action='eliminar_movi_admin.php' onsubmit='return confirm(\"¿Seguro que deseas eliminar este movimiento?\")'>
+                              <input type='hidden' name='id' value='{$row['id']}'>
+                              <input type='hidden' name='fecha_inicio' value='{$_GET['fecha_inicio']}'>
+                              <input type='hidden' name='fecha_fin' value='{$_GET['fecha_fin']}'>
+                              <button type='submit' class='btn btn-sm btn-danger'>Eliminar</button>
+                            </form>
+                          </td>
                         </tr>";
               }
               echo "</tbody></table></div>";
@@ -116,7 +144,7 @@ require_once 'db.php';
   $(document).ready(function () {
     $('#tablaMovimientos').DataTable({
       language: {
-        search: "Buscar:",
+        search: "Buscar por código:",
         zeroRecords: "No se encontraron resultados",
         info: "Mostrando _START_ a _END_ de _TOTAL_ registros",
         infoEmpty: "No hay registros disponibles",
@@ -129,7 +157,10 @@ require_once 'db.php';
         }
       },
       pageLength: 10,
-      lengthChange: false
+      lengthChange: false,
+      columnDefs: [
+        { targets: [1, 2, 3, 4, 5], searchable: false } // Solo permite buscar por el primer campo (código)
+      ]
     });
   });
 </script>
