@@ -1,45 +1,36 @@
 <?php
 require_once 'auth.php';
 require_login();
-
 require_once 'db.php';
 
 $usuario = $_SESSION['user']['username'];
 $fechaInicio = $_GET['fecha_inicio'] ?? '';
 $fechaFin = $_GET['fecha_fin'] ?? '';
 
-$sql = "SELECT codigo_producto, nombre_producto, cantidad, fecha 
-        FROM movimientoo 
-        WHERE usuario = ?";
-$params = [$usuario];
-
-if (!empty($fechaInicio) && !empty($fechaFin)) {
-    $sql .= " AND DATE(fecha) BETWEEN ? AND ?";
-    $params[] = $fechaInicio;
-    $params[] = $fechaFin;
-}
-
-$sql .= " ORDER BY fecha DESC";
-
-$stmt = $conn->prepare($sql);
-if (!$stmt) {
-    die("Error en la preparación de la consulta: " . $conn->error);
-}
-
-$stmt->bind_param(str_repeat("s", count($params)), ...$params);
-$stmt->execute();
-$resultado = $stmt->get_result();
-
 $registros = [];
 $totalCantidad = 0;
 
-while ($row = $resultado->fetch_assoc()) {
-    $registros[] = $row;
-    $totalCantidad += intval($row['cantidad']);
+if (!empty($fechaInicio) && !empty($fechaFin)) {
+    $sql = "SELECT codigo_producto, nombre_producto, cantidad, fecha 
+            FROM movimientoo 
+            WHERE usuario = ? AND DATE(fecha) BETWEEN ? AND ?
+            ORDER BY fecha DESC";
+
+    $stmt = $conn->prepare($sql);
+    if (!$stmt) {
+        die("Error en la preparación de la consulta: " . $conn->error);
+    }
+
+    $stmt->bind_param("sss", $usuario, $fechaInicio, $fechaFin);
+    $stmt->execute();
+    $resultado = $stmt->get_result();
+
+    while ($row = $resultado->fetch_assoc()) {
+        $registros[] = $row;
+        $totalCantidad += intval($row['cantidad']);
+    }
 }
 ?>
-
-
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -78,65 +69,62 @@ while ($row = $resultado->fetch_assoc()) {
 <body>
 <?php include 'sinebar.php'; ?>
 <?php if (isset($_GET['eliminado']) && $_GET['eliminado'] == 1): ?>
-<div class="alert alert-success alert-dismissible fade show" role="alert" id="alertaEliminado">
-    ✅ Movimiento eliminado exitosamente.
-    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Cerrar"></button>
-</div>
+
 <?php endif; ?>
 
 <div class="container">
     <h3 class="mb-4">Mis Movimientos</h3>
 
     <form class="row g-3 mb-4" method="GET">
-    <div class="col-md-4">
-        <label for="fecha_inicio" class="form-label">Fecha Inicio</label>
-        <input type="date" id="fecha_inicio" name="fecha_inicio" value="<?= htmlspecialchars($fechaInicio) ?>" class="form-control">
+        <div class="col-md-4">
+            <label for="fecha_inicio" class="form-label">Fecha Inicio</label>
+            <input type="date" id="fecha_inicio" name="fecha_inicio" value="<?= htmlspecialchars($fechaInicio) ?>" class="form-control">
+        </div>
+        <div class="col-md-4">
+            <label for="fecha_fin" class="form-label">Fecha Fin</label>
+            <input type="date" id="fecha_fin" name="fecha_fin" value="<?= htmlspecialchars($fechaFin) ?>" class="form-control">
+        </div>
+        <div class="col-md-4 d-flex align-items-end">
+            <button type="submit" class="btn btn-primary w-100"><i class="bi bi-search"></i> Consultar</button>
+        </div>
+    </form>
+
+    <?php if (!empty($registros)): ?>
+    <div class="mb-3">
+        <label for="filtro_codigo" class="form-label">Filtrar por Código:</label>
+        <input type="text" id="filtro_codigo" class="form-control" placeholder="Ingrese el código">
     </div>
-    <div class="col-md-4">
-        <label for="fecha_fin" class="form-label">Fecha Fin</label>
-        <input type="date" id="fecha_fin" name="fecha_fin" value="<?= htmlspecialchars($fechaFin) ?>" class="form-control">
+    <div class="total-box">
+        Total de unidades ingresadas: <?= $totalCantidad ?>
     </div>
-    <div class="col-md-4 d-flex align-items-end">
-        <button type="submit" class="btn btn-primary w-100"><i class="bi bi-search"></i> Consultar</button>
-    </div>
-    
-</form>
 
-
-
-<div class="total-box">
-    Total de unidades ingresadas: <?= $totalCantidad ?>
-</div>
-
-<div class="table-responsive">
-    <table id="tablaMovimientos" class="table table-striped table-bordered">
-        <thead>
-            <tr>
-                <th>Código</th>
-                <th>Nombre</th>
-                <th>Cantidad</th>
-                <th>Fecha</th>
-                <th>Eliminar</th>
-            </tr>
-        </thead>
-        <tbody>
-            <?php foreach ($registros as $row): ?>
+    <div class="table-responsive">
+        <table id="tablaMovimientos" class="table table-striped table-bordered">
+            <thead>
                 <tr>
-                    <td><?= htmlspecialchars($row['codigo_producto']) ?></td>
-                    <td><?= htmlspecialchars($row['nombre_producto']) ?></td>
-                    <td><?= htmlspecialchars($row['cantidad']) ?></td>
-                    <td><?= htmlspecialchars($row['fecha']) ?></td>
-                    <td>
-                        <form method="POST" action="eliminar_movimiento.php" onsubmit="return confirm('¿Eliminar este registro?');">
-                            <input type="hidden" name="codigo" value="<?= $row['codigo_producto'] ?>">
-                            <input type="hidden" name="fecha" value="<?= $row['fecha'] ?>">
-                            <button type="submit" class="btn btn-sm btn-danger"><i class="bi bi-trash"></i></button>
-                        </form>
-                    </td>
+                    <th>Código</th>
+                    <th>Nombre</th>
+                    <th>Cantidad</th>
+                    <th>Fecha</th>
+                    
                 </tr>
-            <?php endforeach ?>
-        </tbody>
-    </table>
+            </thead>
+            <tbody>
+                <?php foreach ($registros as $row): ?>
+                    <tr>
+                        <td><?= htmlspecialchars($row['codigo_producto']) ?></td>
+                        <td><?= htmlspecialchars($row['nombre_producto']) ?></td>
+                        <td><?= htmlspecialchars($row['cantidad']) ?></td>
+                        <td><?= htmlspecialchars($row['fecha']) ?></td>
+                       
+                    </tr>
+                <?php endforeach ?>
+            </tbody>
+        </table>
+    </div>
+    <?php elseif (!empty($fechaInicio) && !empty($fechaFin)): ?>
+        <div class="alert alert-warning">No se encontraron resultados para el rango de fecha seleccionado.</div>
+    <?php endif; ?>
 </div>
 
 <!-- Scripts -->
@@ -165,18 +153,8 @@ while ($row = $resultado->fetch_assoc()) {
             tabla.column(0).search(this.value).draw();
         });
     });
-    setTimeout(() => {
-    const alerta = document.getElementById('alertaEliminado');
-    if (alerta) {
-        alerta.classList.remove('show');
-        alerta.classList.add('fade');
-        setTimeout(() => alerta.remove(), 500); // eliminar del DOM
-    }
-}, 2000); // 3 segundos
 
+   
 </script>
-
-
-
 </body>
 </html>

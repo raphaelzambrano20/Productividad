@@ -27,7 +27,7 @@ $ffDate = new DateTime(substr($fecha_fin, 0, 10));
 $diasRango = $fiDate->diff($ffDate)->days + 1;   // siempre ≥ 1
 
 // 4) Promedios globales (según tus reglas)
-$promedioDia     = $diasRango > 0 ? round($totalRango / $diasRango, 2) : 0;
+$promedioDia     = $diasRango > 0 ? round($totalRango / $diasRango / 10, 2) : 0;
 $promedioHora    = round($promedioDia / 5, 2);
 $promedioMinuto  = round($promedioHora / 60, 2);
 

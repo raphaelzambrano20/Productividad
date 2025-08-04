@@ -51,6 +51,8 @@ $user = current_user();
       background: #0b5ed7;
     }
 
+    
+
     /* KPI Cards */
     .kpi-card {
       background: linear-gradient(135deg, #1c2331, #2c3e50);
@@ -94,12 +96,46 @@ $user = current_user();
     @media (max-width: 991.98px) {
       .content { margin-left: 0; }
     }
+
+    .usuario-top-card {
+      background: linear-gradient(135deg, #1f2937, #111827);
+      color: #f9fafb;
+      border: none;
+      border-radius: 1rem;
+      transition: transform 0.2s ease-in-out;
+    }
+
+    .usuario-top-card:hover {
+      transform: scale(1.02);
+      box-shadow: 0 0 15px rgba(100, 255, 218, 0.3);
+    }
+
+    .usuario-top-nombre {
+      font-size: 1.5rem;
+      font-weight: bold;
+      color: #38bdf8; /* Azul claro */
+    }
+
+    .usuario-top-cantidad {
+      font-weight: 600;
+      color: #facc15; /* Amarillo pastel */
+    }
+
+    .bg-gradient-top {
+      background: linear-gradient(to right, #3b82f6, #06b6d4);
+      font-weight: 600;
+      border-top-left-radius: 1rem;
+      border-top-right-radius: 1rem;
+    }
+
   </style>
 </head>
 <body>
 <?php include 'sinebar.php'; ?>
 
 <div class="content">
+
+
   <!-- TOPBAR -->
   <div class="topbar">
     <form id="formFiltro" class="row gx-2 gy-1 align-items-center">
@@ -108,6 +144,8 @@ $user = current_user();
       <div class="col-auto"><button type="submit" class="btn btn-sm btn-primary"><i class="fas fa-filter me-1"></i>Filtrar</button></div>
     </form>
   </div>
+
+
 
   <!-- MAIN -->
   <div class="container-fluid py-4">
@@ -125,7 +163,20 @@ $user = current_user();
       <div class="col-md-6 col-lg-4"><div class="chart-card"><h6>Unidades por Usuario</h6><canvas id="chartUsuarios"></canvas></div></div>
       <div class="col-md-6 col-lg-4"><div class="chart-card"><h6>Promedio por Hora</h6><canvas id="chartUsuariosHora"></canvas></div></div>
       <div class="col-md-6 col-lg-4"><div class="chart-card"><h6>Promedio por Minuto</h6><canvas id="chartUsuariosMinuto"></canvas></div></div>
+    </div><br>
+
+
+    <div class="col-md-3">
+      <div class="card usuario-top-card shadow">
+        <div class="card-header text-white bg-gradient-top">Usuario Top</div>
+        <div class="card-body">
+          <h5 class="card-title usuario-top-nombre" id="usuarioTopNombre">---</h5>
+          <p class="card-text">Total: <span class="usuario-top-cantidad" id="usuarioTopCantidad">0</span> unidades</p>
+        </div>
+      </div>
     </div>
+      
+    
 
     <!-- Tabla -->
     <div class="row mt-4">
@@ -158,19 +209,19 @@ Chart.register(ChartDataLabels);
 let chartDias, chartUsuarios, chartUsuariosHora, chartUsuariosMinuto;
 
 function generarPaletaColores(cantidad) {
-  const base = ['#4e79a7','#f28e2b','#e15759','#76b7b2','#59a14f','#edc948','#b07aa1','#ff9da7','#9c755f','#bab0ac'];
+  const base = ['#9c84f2ff','#f28e2b','#e15759','#76b7b2','#59a14f','#edc948','#b07aa1','#ff9da7','#9c755f','#bab0ac'];
   return Array.from({length: cantidad}, (_,i) => base[i % base.length]);
 }
 
 function initCharts() {
   chartDias = new Chart(document.getElementById('chartDias'), {
     type: 'bar',
-    data: { labels: [], datasets: [{ label: 'Unidades', data: [], backgroundColor: [] }] },
+    data: { labels: [], datasets: [{ label: '', data: [], backgroundColor: [] }] },
     options: { responsive: true, plugins: { datalabels:{ color:'#000', anchor:'end', align:'top' } } }
   });
   chartUsuarios = new Chart(document.getElementById('chartUsuarios'), {
     type: 'pie',
-    data: { labels: [], datasets: [{ data: [], backgroundColor: [] }] },
+    data: { labels: [], datasets: [{labal:'', data: [], backgroundColor: [] }] },
     options: { responsive: true, plugins: { datalabels:{ color:'#fff' } } }
   });
   chartUsuariosHora = new Chart(document.getElementById('chartUsuariosHora'), {
@@ -193,6 +244,10 @@ function cargarDashboard(fecha_inicio = '', fecha_fin = '') {
       document.getElementById('promedio-dia').textContent    = data.promedioDia;
       document.getElementById('promedio-hora').textContent   = data.promedioHora;
       document.getElementById('promedio-minuto').textContent = data.promedioMinuto;
+      
+      // Usuario Top
+      document.getElementById('usuarioTopNombre').textContent = data.usuarioTop.nombre;
+      document.getElementById('usuarioTopCantidad').textContent = data.usuarioTop.total;
 
       const c1 = generarPaletaColores(data.datosPorDia.length);
       chartDias.data.labels = data.datosPorDia.map(i => i.dia);
