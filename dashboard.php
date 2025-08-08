@@ -13,6 +13,8 @@ $user = current_user();
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Dashboard - Sistema Inventario</title>
 
+  
+
   <!-- Bootstrap / Icons -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
@@ -20,118 +22,13 @@ $user = current_user();
   <!-- DataTables -->
   <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css">
   <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.4.1/css/buttons.bootstrap5.min.css">
-
-  <style>
-    body {
-      background: #f0f2f5;
-      font-family: 'Segoe UI', Tahoma, sans-serif;
-    }
-    .content { margin-left: 80px; padding: 0; }
-
-    /* Topbar */
-    .topbar {
-      position: sticky;
-      top: 0;
-      z-index: 100;
-      background: #1c2331;
-      color: #fff;
-      padding: 12px 20px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
-    }
-    .topbar .btn-primary {
-      background: #0d6efd;
-      border: none;
-      font-size: 0.9rem;
-      padding: 6px 14px;
-    }
-    .topbar .btn-primary:hover {
-      background: #0b5ed7;
-    }
-
-    
-
-    /* KPI Cards */
-    .kpi-card {
-      background: linear-gradient(135deg, #1c2331, #2c3e50);
-      color: #fff;
-      border-radius: 10px;
-      box-shadow: 0 2px 8px rgba(0,0,0,.1);
-      padding: 16px;
-      text-align: center;
-      border-top: 3px solid #0d6efd;
-      transition: transform 0.2s;
-    }
-    .kpi-card:hover {
-      transform: translateY(-4px);
-    }
-    .kpi-title { font-size: .9rem; color: #cbd3da; }
-    .kpi-value { font-size: 2rem; font-weight: 700; color: #fff; }
-
-    /* Chart Card */
-    .chart-card {
-      background: #fff;
-      border-radius: 8px;
-      box-shadow: 0 2px 6px rgba(0,0,0,.05);
-      padding: 16px;
-      height: 300px;
-    }
-    .chart-card canvas { height: 100% !important; }
-
-    /* Table Card */
-    .table-card {
-      background: #fff;
-      border-radius: 8px;
-      box-shadow: 0 2px 6px rgba(0,0,0,.05);
-      padding: 16px;
-    }
-    table.dataTable thead th {
-      background: #0d6efd;
-      color: #fff;
-      border: none;
-    }
-
-    @media (max-width: 991.98px) {
-      .content { margin-left: 0; }
-    }
-
-    .usuario-top-card {
-      background: linear-gradient(135deg, #1f2937, #111827);
-      color: #f9fafb;
-      border: none;
-      border-radius: 1rem;
-      transition: transform 0.2s ease-in-out;
-    }
-
-    .usuario-top-card:hover {
-      transform: scale(1.02);
-      box-shadow: 0 0 15px rgba(100, 255, 218, 0.3);
-    }
-
-    .usuario-top-nombre {
-      font-size: 1.5rem;
-      font-weight: bold;
-      color: #38bdf8; /* Azul claro */
-    }
-
-    .usuario-top-cantidad {
-      font-weight: 600;
-      color: #facc15; /* Amarillo pastel */
-    }
-
-    .bg-gradient-top {
-      background: linear-gradient(to right, #3b82f6, #06b6d4);
-      font-weight: 600;
-      border-top-left-radius: 1rem;
-      border-top-right-radius: 1rem;
-    }
-
-  </style>
+  
+  <link rel="stylesheet" href="style_general.css">
+ 
 </head>
 <body>
-<?php include 'sinebar.php'; ?>
+  <nav> <?php include 'navbar.php'; ?></nav>
+
 
 <div class="content">
 
@@ -209,7 +106,7 @@ Chart.register(ChartDataLabels);
 let chartDias, chartUsuarios, chartUsuariosHora, chartUsuariosMinuto;
 
 function generarPaletaColores(cantidad) {
-  const base = ['#9c84f2ff','#f28e2b','#e15759','#76b7b2','#59a14f','#edc948','#b07aa1','#ff9da7','#9c755f','#bab0ac'];
+  const base = ['#9c84f2ff','#f28e2b','#e15759','#76b7b2','#59a14f','#edc948','#b07aa1','#ff9da7','#9c755f','#bab0ac','#4638c9ff','#24e0f1ff'];
   return Array.from({length: cantidad}, (_,i) => base[i % base.length]);
 }
 

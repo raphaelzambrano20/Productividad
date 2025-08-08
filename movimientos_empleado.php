@@ -38,36 +38,11 @@ if (!empty($fechaInicio) && !empty($fechaFin)) {
     <title>Mis Movimientos</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/dataTables.bootstrap5.min.css">
-    <style>
-        body {
-            background-color: #f0f4f8;
-        }
-        .container {
-            margin-top: 60px;
-        }
-        .form-control, .btn {
-            border-radius: 8px;
-        }
-        .table {
-            border-radius: 12px;
-            overflow: hidden;
-        }
-        .table thead {
-            background-color: #0a2342;
-            color: white;
-        }
-        .total-box {
-            background: #dceefc;
-            border-left: 6px solid #0a2342;
-            padding: 12px 20px;
-            margin-bottom: 20px;
-            border-radius: 8px;
-            font-weight: bold;
-        }
-    </style>
+    <link rel="stylesheet" href="style_general.css">
+   
 </head>
 <body>
-<?php include 'sinebar.php'; ?>
+<nav><?php include 'navbar.php'; ?></nav>
 <?php if (isset($_GET['eliminado']) && $_GET['eliminado'] == 1): ?>
 
 <?php endif; ?>

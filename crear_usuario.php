@@ -30,71 +30,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   <title>Crear Usuario</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-  <style>
-    body {
-      font-family: 'Segoe UI', sans-serif;
-      background-color: #f0f2f5;
-    }
-
-    .card {
-      border: none;
-      border-radius: 1rem;
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-      background-color: #ffffff;
-    }
-
-    .card-header {
-      background: linear-gradient(90deg, #003366, #005580);
-      color: white;
-      text-align: center;
-      border-top-left-radius: 1rem;
-      border-top-right-radius: 1rem;
-    }
-
-    .card-header h2 {
-      margin: 0;
-      padding: 20px 0;
-      font-size: 1.5rem;
-    }
-
-    .form-label {
-      font-weight: 600;
-      color: #333;
-    }
-
-    .form-control {
-      border-radius: 8px;
-      border: 1px solid #ced4da;
-      transition: all 0.3s ease;
-    }
-
-    .form-control:focus {
-      border-color: #0d6efd;
-      box-shadow: 0 0 0 0.2rem rgba(13,110,253,.25);
-    }
-
-    .btn-custom {
-      background-color: #0056b3;
-      color: #fff;
-      font-weight: 500;
-      padding: 10px 20px;
-      border: none;
-      border-radius: 8px;
-      transition: background-color 0.3s ease;
-    }
-
-    .btn-custom:hover {
-      background-color: #003366;
-    }
-
-    .container {
-      padding-top: 60px;
-    }
-  </style>
+  <link rel="stylesheet" href="style_general.css">
+  
+ 
 </head>
 <body>
+  <nav> <?php include 'navbar.php'; ?></nav>
 
-  <?php include 'sinebar.php'; ?>
 
   <div class="container">
     <div class="row justify-content-center">
